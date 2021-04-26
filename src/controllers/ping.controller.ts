@@ -1,11 +1,9 @@
 import {inject} from '@loopback/core';
 import {
-  Request,
-  RestBindings,
-  get,
-  response,
-  ResponseObject,
+  get, Request, response,
+  ResponseObject, RestBindings
 } from '@loopback/rest';
+import {Travers} from '../lip/Traverse';
 
 /**
  * OpenAPI response for ping()
@@ -34,11 +32,12 @@ const PING_RESPONSE: ResponseObject = {
   },
 };
 
+
 /**
  * A simple controller to bounce back http requests
  */
 export class PingController {
-  constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+  constructor(@inject(RestBindings.Http.REQUEST) private req: Request) { }
 
   // Map to `GET /ping`
   @get('/ping')
@@ -52,4 +51,15 @@ export class PingController {
       headers: Object.assign({}, this.req.headers),
     };
   }
+
+  // Map to `GET /ping`
+  @get('/pong')
+  @response(200, PING_RESPONSE)
+  pong(): object {
+    const travers = new Travers();
+    return {
+      tree: travers.travers()
+    };
+  }
+
 }
